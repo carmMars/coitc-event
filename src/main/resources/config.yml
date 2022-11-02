@@ -1,0 +1,5 @@
+locations:
+  main-spawn:
+
+max-players: 32
+min-players: 8
