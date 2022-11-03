@@ -4,10 +4,12 @@ import it.axiid.oitc.OITC;
 import it.axiid.oitc.games.Game;
 import it.axiid.oitc.games.states.GameState;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class GamePlayerJoin implements Listener {
 
@@ -21,30 +23,38 @@ public class GamePlayerJoin implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if(Game.getGameState().equals(GameState.PLAYING)) {
-            player.kickPlayer("§cIl gioco è già iniziato!");
-            return;
-        }
+        event.setJoinMessage(null);
 
         if (Game.getGameState().equals(GameState.WAITING)) {
-            player.sendMessage("§aSei entrato nel gioco!");
+
+            player.setGameMode(GameMode.ADVENTURE);
 
             Game.addPlayingPlayer(player);
-
-            for(Player all : Bukkit.getOnlinePlayers()) {
-                all.sendMessage("§e" + player.getName() + " §fè entrato nel §cgioco§f! §7(" + Game.getPlayingPlayers().size() + ")");
-            }
+            Bukkit.broadcastMessage("§e" + player.getName() + " §fè entrato nel §cgioco§f! §7(" + Game.getPlayingPlayers().size() + ")");
 
             if(Game.getPlayingPlayers().size() >= instance.getConfig().getInt("max-players")) {
 
                 Game.setGameState(GameState.STARTING);
                 player.sendMessage("§eIl gioco inizierà tra 10 secondi!");
 
-                Bukkit.getScheduler().runTaskLater(instance, () -> {
-                    Game.setGameState(GameState.PLAYING);
-                    player.sendMessage("§aIl gioco è iniziato!");
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
 
-                }, 100L);
+                        if(Game.countdown == 0) {
+
+                            Game.setGameState(GameState.PLAYING);
+                            Bukkit.broadcastMessage("§aIl gioco è iniziato.");
+                            cancel();
+
+                        }else if(Game.countdown >= 5) {
+                            Bukkit.broadcastMessage("§cIl gioco inizierà tra " + Game.countdown);
+                        }
+
+                        Game.countdown -= 1;
+
+                    }
+                }.runTaskTimer(instance, 20L, 20L);
 
             }
 

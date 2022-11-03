@@ -7,6 +7,9 @@ commands:
   oitc:
     description: Main command
 
+  addspawn:
+    description: Add spawn command
+
   setjoinspawn:
     description: Set join spawn
 
