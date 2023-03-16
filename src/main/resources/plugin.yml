@@ -1,17 +1,11 @@
-name: LyzardOITC
-version: '${project.version}'
-main: it.axiid.oitc.OITC
-load: STARTUP
-author: Axiid
+name: OITC
+version: '1.0'
+main: com.oitc.OITC
+authors:
+  - CARTERHH
+  - Axiid
 commands:
-  oitc:
-    description: Main command
-
   addspawn:
     description: Add spawn command
-
-  setjoinspawn:
-    description: Set join spawn
-
   start:
     description: Start the game

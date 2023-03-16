@@ -1,5 +1,2 @@
-min-players: 8
 max-players: 32
-
-locations:
-  main-spawn:
+kills-objective: 100
